@@ -1,14 +1,10 @@
-# Signal_Analizer
+# Signal_Analyzer
 This repository is ment to describe some operations that are been done on a signal.
 
 ## The story
 This project is intended to extract an audio signal from a wav file and then perform certain operations on it, such as extreme values, average, Laplace transform, signal filtering, and so on.
 
-## Graphical representation of the signal
-> Requirement: Graphically represent the signal. Extract the useful part of the signal if necessary (eliminate
-the 0 values ​​at the end of the file). Create a new file that will be used further. <br>
-
-Removing trailing zeros (or almost zeros, it's hard to get exactly 0) from an audio file (in this case, a WAV file) refers to the process of removing the portion of the signal that is completely silent (no amplitude) at the end of the recording.
+## Python Class
 
 I have created a class to manage all the requirements and that is:
 
@@ -20,6 +16,12 @@ class SignalProcessor:
         self.signal = None
         self.trimmed_signal = None
 ```
+
+## Graphical representation of the signal
+> Requirement: Graphically represent the signal. Extract the useful part of the signal if necessary (eliminate
+the 0 values ​​at the end of the file). Create a new file that will be used further. <br>
+
+Removing trailing zeros (or almost zeros, it's hard to get exactly 0) from an audio file (in this case, a WAV file) refers to the process of removing the portion of the signal that is completely silent (no amplitude) at the end of the recording.
 
 For this specific requirement I have created next member functions of the class to solve the problem:
 
