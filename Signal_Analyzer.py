@@ -10,6 +10,7 @@ class SignalProcessor:
         self.signal = None
         self.trimmed_signal = None
 
+
     def load_file(self):
         """This function load the WAV file and store its sample rate and signal."""
 
@@ -24,6 +25,7 @@ class SignalProcessor:
         print(f"Sample rate is: {self.sample_rate}")
         print(f"Signal length is: {len(self.signal)}")
 
+
     def plot_signal(self, signal, title, color='blue'):
         """Plot the given signal."""
 
@@ -35,6 +37,7 @@ class SignalProcessor:
         plt.legend()
         plt.grid(True)
         plt.show()
+
 
     def trim_trailing_zeros(self):
         """Trim trailing zeros from the signal."""
@@ -51,6 +54,7 @@ class SignalProcessor:
 
         print(f"Trimmed signal length: {len(self.trimmed_signal)}")
 
+
     def save_trimmed_file(self, output_path):
         """Save the trimmed signal to a new WAV file."""
 
@@ -60,6 +64,7 @@ class SignalProcessor:
         else:
             print("Error: Trimmed signal is empty. Perform trimming first.")
 
+
     def calculate_global_extremes(self, signal):
         """Calculate and print the global maximum and minimum of the signal."""
         max_value = np.max(signal)
@@ -67,6 +72,7 @@ class SignalProcessor:
         print(f"Global Maximum: {max_value}")
         print(f"Global Minimum: {min_value}")
         return max_value, min_value
+
 
     def calculate_local_extremes(self, signal):
         """Calculate local maxima and minima of the signal."""
@@ -86,6 +92,7 @@ class SignalProcessor:
 
         return local_maxima_values, local_maxima_indices, local_minima_values, local_minima_indices
 
+
     def analyze_extremes(self):
         """Analyze and plot global and local extremes for the trimmed signal."""
         if self.trimmed_signal is None:
@@ -94,8 +101,8 @@ class SignalProcessor:
 
         # Global extremes
         global_max, global_min = self.calculate_global_extremes(self.trimmed_signal)
-        global_max_index = np.argmax(self.trimmed_signal)  # Index of global maximum
-        global_min_index = np.argmin(self.trimmed_signal)  # Index of global minimum
+        global_max_index = np.argmax(self.trimmed_signal)
+        global_min_index = np.argmin(self.trimmed_signal)
 
         # Local extremes
         local_max_values, local_max_indices, local_min_values, local_min_indices = self.calculate_local_extremes(self.trimmed_signal)
@@ -107,12 +114,13 @@ class SignalProcessor:
         plt.scatter(local_min_indices, local_min_values, color='green', label="Local Minima", zorder=5)
         plt.scatter(global_max_index, global_max, color='orange', label="Global Maximum", zorder=6, edgecolor='black')
         plt.scatter(global_min_index, global_min, color='purple', label="Global Minimum", zorder=6, edgecolor='black')
-        plt.title("Signal with Local Extremes")
+        plt.title("Signal with Extremes")
         plt.xlabel("Sample Index")
         plt.ylabel("Amplitude")
         plt.legend()
         plt.grid(True)
         plt.show()
+
 
     def calculate_mean(self, signal):
         """Calculate the mean of the given signal."""
@@ -127,6 +135,7 @@ class SignalProcessor:
 
         return mean_value
     
+
     def calculate_median(self, signal):
         """Calculate the median of a given signal."""
 
@@ -140,6 +149,7 @@ class SignalProcessor:
 
         return median_value
     
+
     def calculate_dispersion(self, signal):
         """Calculate variance, standard deviation, and range of the signal."""
         if len(signal) == 0:
@@ -156,6 +166,7 @@ class SignalProcessor:
 
         return variance, std_deviation, signal_range
     
+
     def plot_histogram(self, signal, bins=50, title="Signal Histogram"):
         """Plot a histogram of the signal's amplitude values."""
         plt.figure(figsize=(10, 6))
@@ -167,9 +178,41 @@ class SignalProcessor:
         plt.show()
 
 
+    def calculate_zero_crossings(self, signal):
+        """Calculate the number of zero crossings in the signal."""
+        if len(signal) == 0:
+            print("Error: The signal is empty.")
+            return 0
+
+        # Count sign changes between consecutive samples
+        zero_crossings = np.sum(np.diff(np.sign(signal)) != 0)
+
+        print(f"Number of Zero Crossings: {zero_crossings}")
+        return zero_crossings
+
+
+    def plot_autocorrelation(self, signal, title="Autocorrelation of Signal"):
+        """Calculate and plot the autocorrelation of the signal."""
+        if len(signal) == 0:
+            print("Error: The signal is empty.")
+            return
+
+        # Calculate autocorrelation
+        autocorr = np.correlate(signal, signal, mode='full')
+        lags = np.arange(-len(signal) + 1, len(signal))
+
+        # Plot autocorrelation
+        plt.figure(figsize=(12, 6))
+        plt.plot(lags, autocorr, color='purple')
+        plt.title(title)
+        plt.xlabel("Lag")
+        plt.ylabel("Autocorrelation")
+        plt.grid(True)
+        plt.show()
+
 
     def process(self, output_path):
-        """Run the entire process: load, trim, plot, and save."""
+        """Run the entire process."""
 
         self.load_file()
         self.plot_signal(self.signal, "Original Signal")
@@ -178,19 +221,28 @@ class SignalProcessor:
         self.analyze_extremes()
 
         # Calculate mean of the trimmed signal
+        print("\n--- Mean of the signal---")
         trimmed_mean = self.calculate_mean(self.trimmed_signal)
         print(f"Mean of Trimmed Signal: {trimmed_mean}")
 
         # Calculate median of the trimmed signal
+        print("\n--- Median of the signal ---")
         trimmed_median = self.calculate_median(self.trimmed_signal)
         print(f"Median of Trimmed Signal: {trimmed_median}")
 
         # Calculate dispersion of the trimmed signal
         print("\n--- Trimmed Signal Dispersion ---")
         trimmed_variance, trimmed_std_dev, trimmed_range = self.calculate_dispersion(self.trimmed_signal)
+
+        # Calculate zero crossings of the trimmed signal
+        print("\n--- Zero Crossings ---")
+        zero_crossings = self.calculate_zero_crossings(self.trimmed_signal)
         
         # Plot histogram of the trimmed signal
         self.plot_histogram(self.trimmed_signal, title="Histogram of Trimmed Signal")
+
+        # Plot autocorrelation of the trimmed signal
+        self.plot_autocorrelation(self.trimmed_signal)
         
         self.save_trimmed_file(output_path)
 
