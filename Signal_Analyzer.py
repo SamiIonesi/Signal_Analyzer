@@ -93,7 +93,7 @@ class SignalProcessor:
 
     def analyze_extremes(self):
         """Analyze and plot global and local extremes for the trimmed signal."""
-        
+
         if self.trimmed_signal is None:
             print("Error: Trimmed signal is not available. Perform trimming first.")
             return
@@ -135,19 +135,33 @@ class SignalProcessor:
         return mean_value
     
 
-    def calculate_median(self, signal):
-        """Calculate the median of a given signal."""
+    def calculate_median_frequency(self, signal):
+        """
+        Calculate the median frequency of the given signal.
+        Median frequency is the frequency that divides the power spectrum into two equal halves.
+        """
 
         if len(signal) == 0:
             print("Error: The signal is empty.")
             return None
+
+        # Compute the FFT of the signal
+        freqs = np.fft.rfftfreq(len(signal), d=1/self.sample_rate)
+        fft_values = np.fft.rfft(signal)                       
+
+        # Compute the Power Spectral Density (PSD)
+        psd = np.abs(fft_values) ** 2
+
+        # Compute cumulative sum of the PSD
+        cumulative_psd = np.cumsum(psd)
+
+        # Find the frequency where cumulative power equals 50% of total power
+        total_power = cumulative_psd[-1]
+        median_freq_index = np.where(cumulative_psd >= total_power / 2)[0][0]
+
+        median_frequency = freqs[median_freq_index]
         
-        median_value = np.median(signal)
-
-        print(f"The median of the signal is: {median_value}")
-
-        return median_value
-    
+        return median_frequency
 
     def calculate_dispersion(self, signal):
         """Calculate variance, standard deviation, and range of the signal."""
@@ -224,10 +238,11 @@ class SignalProcessor:
         trimmed_mean = self.calculate_mean(self.trimmed_signal)
         print(f"Mean of Trimmed Signal: {trimmed_mean}")
 
-        # Calculate median of the trimmed signal
-        print("\n--- Median of the signal ---")
-        trimmed_median = self.calculate_median(self.trimmed_signal)
-        print(f"Median of Trimmed Signal: {trimmed_median}")
+        # Calculate median frequency of the trimmed signal
+        print("\n--- Median Frequency of the Signal ---")
+        median_frequency = self.calculate_median_frequency(self.trimmed_signal)
+        if median_frequency:
+            print(f"Median Frequency of Trimmed Signal: {median_frequency} Hz")
 
         # Calculate dispersion of the trimmed signal
         print("\n--- Trimmed Signal Dispersion ---")
