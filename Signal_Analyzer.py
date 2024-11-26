@@ -67,10 +67,13 @@ class SignalProcessor:
 
     def calculate_global_extremes(self, signal):
         """Calculate and print the global maximum and minimum of the signal."""
+
         max_value = np.max(signal)
         min_value = np.min(signal)
+
         print(f"Global Maximum: {max_value}")
         print(f"Global Minimum: {min_value}")
+
         return max_value, min_value
 
 
@@ -81,20 +84,16 @@ class SignalProcessor:
         local_maxima_indices = find_peaks(signal)[0]
         local_maxima_values = signal[local_maxima_indices]
 
-        # Find local minima (invert the signal to use find_peaks)
+        # Find local minima
         local_minima_indices = find_peaks(-signal)[0]
         local_minima_values = signal[local_minima_indices]
-
-        #print(f"Local Maxima: {local_maxima_values}")
-        #print(f"Local Maxima Indices: {local_maxima_indices}")
-        #print(f"Local Minima: {local_minima_values}")
-        #print(f"Local Minima Indices: {local_minima_indices}")
 
         return local_maxima_values, local_maxima_indices, local_minima_values, local_minima_indices
 
 
     def analyze_extremes(self):
         """Analyze and plot global and local extremes for the trimmed signal."""
+        
         if self.trimmed_signal is None:
             print("Error: Trimmed signal is not available. Perform trimming first.")
             return

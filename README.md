@@ -122,10 +122,85 @@ if __name__ == "__main__":
 > Requirement: Determine the extreme values, mean, median, dispersion and represent the histogram.
 
 ### Extreme values
-**The extreme values** ​​of a signal refer to the points where the signal reaches its maximum or minimum amplitude. These are important features in signal analysis because they provide information about the intensity, dynamics, and nature of the signal.
+**The extreme values** ​​of a signal refer to the points where the signal reaches its maximum or minimum amplitude. These are important features in signal analysis because they provide information about the intensity, dynamics, and nature of the signal. <br>
+
+For this requirement I have created some functions and they are:
+
+#### - Global extreme values
+```Python
+def calculate_global_extremes(self, signal):
+    """Calculate and print the global maximum and minimum of the signal."""
+
+    max_value = np.max(signal)
+    min_value = np.min(signal)
+
+    print(f"Global Maximum: {max_value}")
+    print(f"Global Minimum: {min_value}")
+    
+    return max_value, min_value
+```
+
+#### - Local extreme values
+```Python
+def calculate_local_extremes(self, signal):
+    """Calculate local maxima and minima of the signal."""
+
+    # Find local maxima
+    local_maxima_indices = find_peaks(signal)[0]
+    local_maxima_values = signal[local_maxima_indices]
+
+    # Find local minima
+    local_minima_indices = find_peaks(-signal)[0]
+    local_minima_values = signal[local_minima_indices]
+
+    return local_maxima_values, local_maxima_indices, local_minima_values, local_minima_indices
+```
+
+#### - Plot extremes
+```Python
+def analyze_extremes(self):
+    """Analyze and plot global and local extremes for the trimmed signal."""
+    
+    if self.trimmed_signal is None:
+        print("Error: Trimmed signal is not available. Perform trimming first.")
+        return
+
+    # Global extremes
+    global_max, global_min = self.calculate_global_extremes(self.trimmed_signal)
+    global_max_index = np.argmax(self.trimmed_signal)
+    global_min_index = np.argmin(self.trimmed_signal)
+
+    # Local extremes
+    local_max_values, local_max_indices, local_min_values, local_min_indices = self.calculate_local_extremes(self.trimmed_signal)
+
+    # Plot signal with marked extremes
+    plt.figure(figsize=(12, 6))
+    plt.plot(self.trimmed_signal, label="Trimmed Signal", color='blue')
+    plt.scatter(local_max_indices, local_max_values, color='red', label="Local Maxima", zorder=5)
+    plt.scatter(local_min_indices, local_min_values, color='green', label="Local Minima", zorder=5)
+    plt.scatter(global_max_index, global_max, color='orange', label="Global Maximum", zorder=6, edgecolor='black')
+    plt.scatter(global_min_index, global_min, color='purple', label="Global Minimum", zorder=6, edgecolor='black')
+    plt.title("Signal with Extremes")
+    plt.xlabel("Sample Index")
+    plt.ylabel("Amplitude")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+```
 
 ### Mean of the signal
 **The mean** of a signal is the arithmetic average of all its amplitude values. It provides a measure of the signal's central tendency or the "average level" of the signal's amplitude.
+
+The mathematical relation for the mean of a function \(f(t)\) is defined as:
+
+\[
+\text{Mean}(f(t)) = \frac{1}{T} \int_{t-T}^{t} f(t) \, dt
+\]
+
+Where:
+- \(f(t)\): input signal
+- \(T = \frac{1}{\text{fundamental frequency}}\)
+
 
 ### Median of the signal
 The median of a signal is the middle value of the signal's amplitude when all its samples are sorted in ascending order. It represents the value that divides the signal into two halves:
