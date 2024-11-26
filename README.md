@@ -125,7 +125,7 @@ if __name__ == "__main__":
 **The extreme values** ​​of a signal refer to the points where the signal reaches its maximum or minimum amplitude. These are important features in signal analysis because they provide information about the intensity, dynamics, and nature of the signal. <br>
 
 #### Example
-This is an example from a portion of a signal in which we can see local maxima, local minima, global maximum and global minimum.
+This is an example from a portion of a signal in which we can see local maxima, local minima, global maximum and global minimum. <br>
 ![Extrems_of_a_signal](https://github.com/user-attachments/assets/5cc70f97-a7b5-4fbd-b127-3eb964b38a35)
 
 #### Extreme values Python functions
@@ -197,7 +197,7 @@ def analyze_extremes(self):
 **The mean** of a signal is the arithmetic average of all its amplitude values. It provides a measure of the signal's central tendency or the "average level" of the signal's amplitude.
 
 #### Mean formula
-The mathematical relation for the mean of a function f(t) is defined as:
+The mathematical relation for the mean of a function f(t) is defined as: <br>
 ![Mean_of_Signal](https://github.com/user-attachments/assets/26912a65-d4e9-4554-b99c-ef47be35d67a)
 
 #### Mean Python function
