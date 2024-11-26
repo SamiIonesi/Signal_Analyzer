@@ -124,9 +124,14 @@ if __name__ == "__main__":
 ### Extreme values
 **The extreme values** ​​of a signal refer to the points where the signal reaches its maximum or minimum amplitude. These are important features in signal analysis because they provide information about the intensity, dynamics, and nature of the signal. <br>
 
+#### Example
+This is an example from a portion of a signal in which we can see local maxima, local minima, global maximum and global minimum.
+![Extrems_of_a_signal](https://github.com/user-attachments/assets/5cc70f97-a7b5-4fbd-b127-3eb964b38a35)
+
+#### Extreme values Python functions
 For this requirement I have created some functions and they are:
 
-#### - Global extreme values
+##### - Global extreme values
 ```Python
 def calculate_global_extremes(self, signal):
     """Calculate and print the global maximum and minimum of the signal."""
@@ -140,7 +145,7 @@ def calculate_global_extremes(self, signal):
     return max_value, min_value
 ```
 
-#### - Local extreme values
+##### - Local extreme values
 ```Python
 def calculate_local_extremes(self, signal):
     """Calculate local maxima and minima of the signal."""
@@ -156,7 +161,7 @@ def calculate_local_extremes(self, signal):
     return local_maxima_values, local_maxima_indices, local_minima_values, local_minima_indices
 ```
 
-#### - Plot extremes
+##### - Plot extremes
 ```Python
 def analyze_extremes(self):
     """Analyze and plot global and local extremes for the trimmed signal."""
@@ -191,15 +196,29 @@ def analyze_extremes(self):
 ### Mean of the signal
 **The mean** of a signal is the arithmetic average of all its amplitude values. It provides a measure of the signal's central tendency or the "average level" of the signal's amplitude.
 
-The mathematical relation for the mean of a function \(f(t)\) is defined as:
+#### Mean formula
+The mathematical relation for the mean of a function f(t) is defined as:
+![Mean_of_Signal](https://github.com/user-attachments/assets/26912a65-d4e9-4554-b99c-ef47be35d67a)
 
-\[
-\text{Mean}(f(t)) = \frac{1}{T} \int_{t-T}^{t} f(t) \, dt
-\]
+#### Mean Python function
+The function that I created for this requirement is:
 
-Where:
-- \(f(t)\): input signal
-- \(T = \frac{1}{\text{fundamental frequency}}\)
+```Python
+def calculate_mean(self, signal):
+    """Calculate the mean of the given signal."""
+
+    if len(signal) == 0:
+        print("Error: The signal is empty.")
+        return None
+    
+    mean_value = np.mean(signal)
+
+    print(f"The mean of the signal is: {mean_value}")
+
+    return mean_value
+```
+
+
 
 ### Median of the signal
 The median of a signal is the middle value of the signal's amplitude when all its samples are sorted in ascending order. It represents the value that divides the signal into two halves:
