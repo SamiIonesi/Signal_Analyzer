@@ -201,7 +201,6 @@ Where:
 - \(f(t)\): input signal
 - \(T = \frac{1}{\text{fundamental frequency}}\)
 
-
 ### Median of the signal
 The median of a signal is the middle value of the signal's amplitude when all its samples are sorted in ascending order. It represents the value that divides the signal into two halves:
 
