@@ -221,10 +221,7 @@ def calculate_mean(self, signal):
 
 
 ### Median of the signal
-The median of a signal is the middle value of the signal's amplitude when all its samples are sorted in ascending order. It represents the value that divides the signal into two halves:
-
-- 50% of the values are less than or equal to the median
-- 50% of the values are greater than or equal to the median
+The median frequency (𝑓𝑚fm) is a measure used in signal analysis to determine the frequency at which the power spectrum of a signal is divided into two equal halves. It is a key parameter for understanding the distribution of energy across the frequency spectrum.
 
 ### Dispersion of a signal
 The dispersion of a signal quantifies how its values are spread out or scattered around a central value (usually the mean). Dispersion provides insight into the variability of the signal. Key statistical measures of dispersion include variance, standard deviation, and range.
