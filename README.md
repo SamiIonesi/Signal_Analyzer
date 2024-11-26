@@ -220,8 +220,55 @@ def calculate_mean(self, signal):
 
 
 
-### Median of the signal
-The median frequency (𝑓𝑚fm) is a measure used in signal analysis to determine the frequency at which the power spectrum of a signal is divided into two equal halves. It is a key parameter for understanding the distribution of energy across the frequency spectrum.
+### Median frequency of the signal
+The median frequency is a measure used in signal analysis to determine the frequency at which the power spectrum of a signal is divided into two equal halves. It is a key parameter for understanding the distribution of energy across the frequency spectrum.
+
+#### How it works
+
+##### 1. Frequency Spectrum
+The signal is first converted to the frequency domain using the Fast Fourier Transform (FFT).
+
+##### 2. Power Spectral Density (PSD)
+The squared magnitude of the FFT values gives the power at each frequency.
+
+##### 3. Cumulative Power
+The cumulative sum of the PSD is computed.
+
+##### 4. Median Frequency
+The frequency where the cumulative power reaches 50% of the total power is identified as the median frequency.
+
+#### Median frequency Python function
+For this requirement I have createt next member function of the class:
+
+```Python
+def calculate_median_frequency(self, signal):
+    """
+    Calculate the median frequency of the given signal.
+    Median frequency is the frequency that divides the power spectrum into two equal halves.
+    """
+
+    if len(signal) == 0:
+        print("Error: The signal is empty.")
+        return None
+
+    # Compute the FFT of the signal
+    freqs = np.fft.rfftfreq(len(signal), d=1/self.sample_rate)
+    fft_values = np.fft.rfft(signal)                       
+
+    # Compute the Power Spectral Density (PSD)
+    psd = np.abs(fft_values) ** 2
+
+    # Compute cumulative sum of the PSD
+    cumulative_psd = np.cumsum(psd)
+
+    # Find the frequency where cumulative power equals 50% of total power
+    total_power = cumulative_psd[-1]
+    median_freq_index = np.where(cumulative_psd >= total_power / 2)[0][0]
+
+    median_frequency = freqs[median_freq_index]
+    
+        return median_frequency
+```
 
 ### Dispersion of a signal
 The dispersion of a signal quantifies how its values are spread out or scattered around a central value (usually the mean). Dispersion provides insight into the variability of the signal. Key statistical measures of dispersion include variance, standard deviation, and range.
