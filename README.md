@@ -225,8 +225,8 @@ The median frequency is a measure used in signal analysis to determine the frequ
 
 #### How it works
 
-##### 1. Frequency Spectrum
-The signal is first converted to the frequency domain using the Fast Fourier Transform (FFT).
+&nbsp;&nbsp; ##### 1. Frequency Spectrum
+&nbsp;&nbsp; The signal is first converted to the frequency domain using the Fast Fourier Transform (FFT).
 
 ##### 2. Power Spectral Density (PSD)
 The squared magnitude of the FFT values gives the power at each frequency.
