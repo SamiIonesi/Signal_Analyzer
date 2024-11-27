@@ -278,5 +278,21 @@ Zero crossings refer to the points where a signal transitions through the value 
 
 [![A zero-crossing in a line graph of a waveform representing voltage over time](https://github.com/user-attachments/assets/fbbd5567-c240-4810-b887-1c7442044ccc)](https://en.wikipedia.org/wiki/Zero_crossing)
 
+### Zero crossings Python function
+
+For this requirement I have created next member class function:
+```Python
+def calculate_zero_crossings(self, signal):
+    """Calculate the number of zero crossings in the signal."""
+    if len(signal) == 0:
+        print("Error: The signal is empty.")
+        return 0
+
+    # Count sign changes between consecutive samples
+    zero_crossings = np.sum(np.diff(np.sign(signal)) != 0)
+
+    return zero_crossings
+```
+
 ## Autocorrelation
 The autocorrelation of a signal measures the similarity of the signal with a delayed version of itself over varying time delays. It quantifies how a signal correlates with itself as the time shift (or lag) increases, providing insight into the signal's periodicity, structure, and temporal relationships.
