@@ -200,7 +200,6 @@ class SignalProcessor:
         # Count sign changes between consecutive samples
         zero_crossings = np.sum(np.diff(np.sign(signal)) != 0)
 
-        print(f"Number of Zero Crossings: {zero_crossings}")
         return zero_crossings
 
 
@@ -251,6 +250,7 @@ class SignalProcessor:
         # Calculate zero crossings of the trimmed signal
         print("\n--- Zero Crossings ---")
         zero_crossings = self.calculate_zero_crossings(self.trimmed_signal)
+        print(f"Number of Zero Crossings: {zero_crossings}")
         
         # Plot histogram of the trimmed signal
         self.plot_histogram(self.trimmed_signal, title="Histogram of Trimmed Signal")
