@@ -273,9 +273,10 @@ def calculate_median_frequency(self, signal):
 ### Dispersion of a signal
 The dispersion of a signal quantifies how its values are spread out or scattered around a central value (usually the mean). Dispersion provides insight into the variability of the signal. Key statistical measures of dispersion include variance, standard deviation, and range.
 
-
 ## Zero crossings
-Zero crossings refer to the points where a signal transitions through the value of zero on its amplitude axis. Specifically, a zero crossing occurs when a signal changes sign from positive to negative or vice versa. This concept is widely used in signal processing and related fields to analyze and characterize signals.
+Zero crossings refer to the points where a signal transitions through the value of zero on its amplitude axis. Specifically, a zero crossing occurs when a signal changes sign from positive to negative or vice versa. This concept is widely used in signal processing and related fields to analyze and characterize signals. <br>
+
+[![A zero-crossing in a line graph of a waveform representing voltage over time](https://github.com/user-attachments/assets/fbbd5567-c240-4810-b887-1c7442044ccc)](https://en.wikipedia.org/wiki/Zero_crossing)
 
 ## Autocorrelation
 The autocorrelation of a signal measures the similarity of the signal with a delayed version of itself over varying time delays. It quantifies how a signal correlates with itself as the time shift (or lag) increases, providing insight into the signal's periodicity, structure, and temporal relationships.
