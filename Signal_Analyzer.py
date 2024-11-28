@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io.wavfile as wav
 from scipy.signal import find_peaks
+from scipy.signal import windows
+
 
 class SignalProcessor:
     def __init__(self, file_path):
@@ -222,6 +224,84 @@ class SignalProcessor:
         plt.grid(True)
         plt.show()
 
+    def compute_spectrum(self, signal, window_size, window_type='rectangular'):
+        """ Compute the spectrum of the signal using a specified window function. """
+
+        # Determine the window function
+        if window_type == 'rectangular':
+            window = np.ones(window_size)
+        elif window_type == 'hamming':
+            window = windows.hamming(window_size)
+        elif window_type == 'hann':
+            window = windows.hann(window_size)
+        elif window_type == 'blackman':
+            window = windows.blackman(window_size)
+        else:
+            raise ValueError(f"Unsupported window type: {window_type}")
+
+        # Divide signal into chunks
+        num_chunks = len(signal)
+        spectra = []
+
+        for i in range(num_chunks):
+            chunk = signal[i * window_size:(i + 1) * window_size]
+            if len(chunk) < window_size:
+                break
+            
+            # Apply window to the chunk
+            windowed_chunk = chunk * window
+            
+            # Compute FFT
+            fft_result = np.fft.rfft(windowed_chunk)
+            spectra.append(np.abs(fft_result))
+
+        # Average the spectra over all chunks
+        avg_spectrum = np.mean(spectra, axis=0)
+        freqs = np.fft.rfftfreq(window_size, d=1/self.sample_rate)
+
+        return freqs, avg_spectrum
+    
+    def plot_spectrum(self, freqs, spectrum, window_type):
+        """ Plot the spectrum for a given window type. """
+
+        plt.figure(figsize=(12, 6))
+        plt.plot(freqs, 20 * np.log10(spectrum), label=f"Window: {window_type}")
+        plt.title(f"Spectrum using {window_type} window")
+        plt.xlabel("Frequency (Hz)")
+        plt.ylabel("Magnitude (dB)")
+        plt.grid(True)
+        plt.legend()
+        plt.show()
+
+    def analyze_spectrum(self):
+        """
+        Analyze the spectrum of the trimmed signal with different window functions
+        and overlay all windows in the same plot.
+        """
+        if self.trimmed_signal is None:
+            print("Error: Trimmed signal is not available. Perform trimming first.")
+            return
+
+        # Parameters
+        window_size = 1024
+        window_types = ['rectangular', 'hamming', 'hann', 'blackman']
+        colors = ['blue', 'orange', 'green', 'red']
+
+        plt.figure(figsize=(12, 6))
+        
+        for window_type, color in zip(window_types, colors):
+            freqs, spectrum = self.compute_spectrum(self.trimmed_signal, window_size, window_type)
+            plt.plot(freqs, 20 * np.log10(spectrum), label=f"Window: {window_type}", color=color)
+
+        # Plot settings
+        plt.title("Spectral Analysis with Different Windows")
+        plt.xlabel("Frequency (Hz)")
+        plt.ylabel("Magnitude (dB)")
+        plt.grid(True)
+        plt.legend()
+        plt.show()
+
+
 
     def process(self, output_path):
         """Run the entire process."""
@@ -257,6 +337,9 @@ class SignalProcessor:
 
         # Plot autocorrelation of the trimmed signal
         self.plot_autocorrelation(self.trimmed_signal)
+
+        # This one is used to analyze the spectrum of the trimmed signal
+        self.analyze_spectrum()
         
         self.save_trimmed_file(output_path)
 

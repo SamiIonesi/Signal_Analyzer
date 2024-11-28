@@ -294,7 +294,61 @@ def calculate_zero_crossings(self, signal):
     return zero_crossings
 ```
 
-
-
 ## Autocorrelation
 The autocorrelation of a signal measures the similarity of the signal with a delayed version of itself over varying time delays. It quantifies how a signal correlates with itself as the time shift (or lag) increases, providing insight into the signal's periodicity, structure, and temporal relationships.
+
+
+## Analyze signal spectrum
+
+The spectrum of a signal represents the distribution of its frequency components, showing how much of the signal's energy or amplitude is present at each frequency. It is a way to analyze and visualize the signal in the frequency domain, rather than the time domain.
+
+### Key Aspects of a Signal's Spectrum:
+
+#### 1. Frequency Components:
+
+- Any signal can be broken down into a sum of sinusoidal components of different frequencies using mathematical tools like Fourier Transform.
+- The spectrum reveals these frequencies, allowing us to see which ones contribute to the signal.
+
+#### 2. Amplitude or Power:
+
+- The spectrum shows the amplitude (or power) of each frequency component.
+- For example, a high amplitude at a specific frequency indicates that the signal has a strong contribution from that frequency.
+
+#### 3. Bandwidth:
+
+- The range of frequencies over which the signal has significant energy is called the bandwidth.
+- Narrowband signals are concentrated around a small frequency range, while wideband signals span a larger range.
+
+### How is the Spectrum Obtained?
+
+The spectrum is typically computed using the Fourier Transform (FT), which transforms a signal from the time domain (variations over time) to the frequency domain (variations over frequency). Types of Fourier analysis include:
+
+#### 1. Continuous Fourier Transform (CFT):
+
+Used for continuous signals to get a continuous spectrum.
+
+#### 2. Discrete Fourier Transform (DFT):
+
+Used for discrete signals (e.g., sampled signals) to get a sampled version of the spectrum.
+
+#### 3. Fast Fourier Transform (FFT):
+
+An efficient algorithm to compute the DFT.
+
+### Types of Signals and Their Spectra:
+
+#### 1. Periodic Signals:
+
+Have a discrete spectrum consisting of harmonics (integer multiples of the fundamental frequency).
+Example: A pure sine wave has a single frequency in its spectrum.
+
+#### 2. Aperiodic Signals:
+
+Have a continuous spectrum, covering a range of frequencies.
+Example: A rectangular pulse has a spectrum that spreads across multiple frequencies.
+
+#### 3. Noisy Signals:
+
+Their spectrum often spans a wide frequency range (e.g., white noise has a uniform spectrum across all frequencies).
+
+### Signal Spectrum Python functions
