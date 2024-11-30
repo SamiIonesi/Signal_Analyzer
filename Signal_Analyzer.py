@@ -236,6 +236,10 @@ class SignalProcessor:
             window = windows.hann(window_size)
         elif window_type == 'blackman':
             window = windows.blackman(window_size)
+        elif window_type == 'flat_top':
+            window = windows.flattop(window_size)
+        elif window_type == 'chebyshev':
+            window = windows.chebwin(window_size, at=100)  # Set attenuation to 100 dB
         else:
             raise ValueError(f"Unsupported window type: {window_type}")
 
@@ -260,6 +264,7 @@ class SignalProcessor:
         freqs = np.fft.rfftfreq(window_size, d=1/self.sample_rate)
 
         return freqs, avg_spectrum
+
     
     def plot_spectrum(self, freqs, spectrum, window_type):
         """ Plot the spectrum for a given window type. """
@@ -273,6 +278,7 @@ class SignalProcessor:
         plt.legend()
         plt.show()
 
+
     def analyze_spectrum(self):
         """
         Analyze the spectrum of the trimmed signal with different window functions
@@ -284,8 +290,8 @@ class SignalProcessor:
 
         # Parameters
         window_size = 1024
-        window_types = ['rectangular', 'hamming', 'hann', 'blackman']
-        colors = ['blue', 'orange', 'green', 'red']
+        window_types = ['rectangular', 'hamming', 'hann', 'blackman', 'flat_top', 'chebyshev']
+        colors = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
 
         plt.figure(figsize=(12, 6))
         
@@ -300,8 +306,6 @@ class SignalProcessor:
         plt.grid(True)
         plt.legend()
         plt.show()
-
-
 
     def process(self, output_path):
         """Run the entire process."""

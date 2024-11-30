@@ -352,3 +352,128 @@ Example: A rectangular pulse has a spectrum that spreads across multiple frequen
 Their spectrum often spans a wide frequency range (e.g., white noise has a uniform spectrum across all frequencies).
 
 ### Signal Spectrum Python functions
+
+For this requirement I have created next functions that are member functions of the class:
+
+#### 1. Compute spectrum
+
+```Python
+def compute_spectrum(self, signal, window_size, window_type='rectangular'):
+    """ Compute the spectrum of the signal using a specified window function. """
+
+    # Determine the window function
+    if window_type == 'rectangular':
+        window = np.ones(window_size)
+    elif window_type == 'hamming':
+        window = windows.hamming(window_size)
+    elif window_type == 'hann':
+        window = windows.hann(window_size)
+    elif window_type == 'blackman':
+        window = windows.blackman(window_size)
+    elif window_type == 'flat_top':
+        window = windows.flattop(window_size)
+    elif window_type == 'chebyshev':
+        window = windows.chebwin(window_size, at=100)  # Set attenuation to 100 dB
+    else:
+        raise ValueError(f"Unsupported window type: {window_type}")
+
+    # Divide signal into chunks
+    num_chunks = len(signal)
+    spectra = []
+
+    for i in range(num_chunks):
+        chunk = signal[i * window_size:(i + 1) * window_size]
+        if len(chunk) < window_size:
+            break
+        
+        # Apply window to the chunk
+        windowed_chunk = chunk * window
+        
+        # Compute FFT
+        fft_result = np.fft.rfft(windowed_chunk)
+        spectra.append(np.abs(fft_result))
+
+    # Average the spectra over all chunks
+    avg_spectrum = np.mean(spectra, axis=0)
+    freqs = np.fft.rfftfreq(window_size, d=1/self.sample_rate)
+
+    return freqs, avg_spectrum
+```
+
+#### 2. Plot spectrum
+
+```Python
+def plot_spectrum(self, freqs, spectrum, window_type):
+    """ Plot the spectrum for a given window type. """
+
+    plt.figure(figsize=(12, 6))
+    plt.plot(freqs, 20 * np.log10(spectrum), label=f"Window: {window_type}")
+    plt.title(f"Spectrum using {window_type} window")
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel("Magnitude (dB)")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+```
+
+#### 3. Analyze spectrum
+
+```Python
+def analyze_spectrum(self):
+    """
+    Analyze the spectrum of the trimmed signal with different window functions
+    and overlay all windows in the same plot.
+    """
+    if self.trimmed_signal is None:
+        print("Error: Trimmed signal is not available. Perform trimming first.")
+        return
+
+    # Parameters
+    window_size = 1024
+    window_types = ['rectangular', 'hamming', 'hann', 'blackman', 'flat_top', 'chebyshev']
+    colors = ['blue', 'orange', 'green', 'red', 'purple', 'brown']
+
+    plt.figure(figsize=(12, 6))
+    
+    for window_type, color in zip(window_types, colors):
+        freqs, spectrum = self.compute_spectrum(self.trimmed_signal, window_size, window_type)
+        plt.plot(freqs, 20 * np.log10(spectrum), label=f"Window: {window_type}", color=color)
+
+    # Plot settings
+    plt.title("Spectral Analysis with Different Windows")
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel("Magnitude (dB)")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+```
+
+### Characteristics of Each Window
+
+| **Window Type**  | **Main Lobe Width** | **Side Lobe Attenuation** | **Use Case**             | **Impact on Spectrum**                                   |
+|-------------------|---------------------|----------------------------|--------------------------|---------------------------------------------------------|
+| **Rectangular**   | Narrowest          | Poor (-13 dB)              | Basic FFT               | High spectral leakage; poor resolution.                |
+| **Hamming**       | Medium             | Moderate (-43 dB)          | General Use             | Good balance of leakage and resolution.                |
+| **Hann**          | Wider              | Better (-44 dB)            | Harmonic Analysis       | Reduces leakage more than Hamming but at the cost of wider lobes. |
+| **Blackman**      | Widest             | High (-74 dB)              | Low Signal Strength     | Excellent leakage reduction but lowest resolution.      |
+| **Flat Top**      | Very Wide          | Very High (-93 dB)         | Amplitude Measurement   | Flattens peaks, accurate amplitude but low frequency resolution. |
+| **Chebyshev**     | Adjustable         | Customizable (-100 dB)     | Advanced Applications   | Offers customizable trade-offs between resolution and attenuation. |
+
+### Conclusions
+
+#### Spectral Leakage:
+
+- Rectangular windows suffer from the highest spectral leakage, making them unsuitable for signals with close spectral components.
+- Chebyshev and Flat Top windows excel at minimizing leakage but at the cost of broadening the main lobe.
+
+#### Resolution vs. Attenuation:
+
+- Blackman and Hann windows provide a good compromise, with sufficient attenuation for most practical applications.
+
+#### Amplitude Accuracy:
+
+- The Flat Top window is ideal for amplitude measurements, though its frequency resolution is poor.
+
+#### Customization:
+
+- Chebyshev windows allow fine-tuning for specific needs, such as higher attenuation or narrower main lobes.
