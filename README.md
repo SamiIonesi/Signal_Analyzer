@@ -307,9 +307,9 @@ def plot_autocorrelation(self, signal, title="Autocorrelation of Signal"):
 The spectrum of a signal represents the distribution of its frequency components, showing how much of the signal's energy or amplitude is present at each frequency. It is a way to analyze and visualize the signal in the frequency domain, rather than the time domain.
 
 > Requirement: Determine the signal spectrum as follows:
-- a) Apply the Fourier Transform on a series of samples (1 second or 1024/2048 samples);
-- b) Apply various time windows and repeat 4.a. for each type of window;
-- c) Draw conclusions regarding the signal spectrum.
+> a) Apply the Fourier Transform on a series of samples (1 second or 1024/2048 samples);
+> b) Apply various time windows and repeat 4.a. for each type of window;
+> c) Draw conclusions regarding the signal spectrum.
 
 ### 4.1 Key Aspects of a Signal's Spectrum
 
