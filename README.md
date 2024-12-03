@@ -255,7 +255,7 @@ Zero crossings refer to the points where a signal transitions through the value 
 
 [![A zero-crossing in a line graph of a waveform representing voltage over time](https://github.com/user-attachments/assets/fbbd5567-c240-4810-b887-1c7442044ccc)](https://en.wikipedia.org/wiki/Zero_crossing)
 
-## Zero crossings Python function
+### 3.1.1 Zero crossings Python function
 
 For this requirement I have created next member class function:
 ```Python
@@ -279,7 +279,7 @@ The autocorrelation of a signal measures the similarity of the signal with a del
 
 ![Signal_autocorrelation](https://github.com/user-attachments/assets/b7983428-2ed2-4de7-9564-8f5fd45a9eee)
 
-### Autocorelation Python function
+### 3.2.1 Autocorelation Python function
 
 ```Python
 def plot_autocorrelation(self, signal, title="Autocorrelation of Signal"):
@@ -311,60 +311,60 @@ The spectrum of a signal represents the distribution of its frequency components
 - b) Apply various time windows and repeat 4.a. for each type of window;
 - c) Draw conclusions regarding the signal spectrum.
 
-### Key Aspects of a Signal's Spectrum:
+### 4.1 Key Aspects of a Signal's Spectrum:
 
-#### 1. Frequency Components:
+#### 4.1.1 Frequency Components:
 
 - Any signal can be broken down into a sum of sinusoidal components of different frequencies using mathematical tools like Fourier Transform.
 - The spectrum reveals these frequencies, allowing us to see which ones contribute to the signal.
 
-#### 2. Amplitude or Power:
+#### 4.1.2 Amplitude or Power:
 
 - The spectrum shows the amplitude (or power) of each frequency component.
 - For example, a high amplitude at a specific frequency indicates that the signal has a strong contribution from that frequency.
 
-#### 3. Bandwidth:
+#### 4.1.3 Bandwidth:
 
 - The range of frequencies over which the signal has significant energy is called the bandwidth.
 - Narrowband signals are concentrated around a small frequency range, while wideband signals span a larger range.
 
-### How is the Spectrum Obtained?
+### 4.2 How is the Spectrum Obtained?
 
 The spectrum is typically computed using the Fourier Transform (FT), which transforms a signal from the time domain (variations over time) to the frequency domain (variations over frequency). Types of Fourier analysis include:
 
-#### 1. Continuous Fourier Transform (CFT):
+#### 4.2.1 Continuous Fourier Transform (CFT):
 
 Used for continuous signals to get a continuous spectrum.
 
-#### 2. Discrete Fourier Transform (DFT):
+#### 4.2.2 Discrete Fourier Transform (DFT):
 
 Used for discrete signals (e.g., sampled signals) to get a sampled version of the spectrum.
 
-#### 3. Fast Fourier Transform (FFT):
+#### 4.2.3 Fast Fourier Transform (FFT):
 
 An efficient algorithm to compute the DFT.
 
-### Types of Signals and Their Spectra:
+### 4.3 Types of Signals and Their Spectra:
 
-#### 1. Periodic Signals:
+#### 4.3.1 Periodic Signals:
 
 Have a discrete spectrum consisting of harmonics (integer multiples of the fundamental frequency).
 Example: A pure sine wave has a single frequency in its spectrum.
 
-#### 2. Aperiodic Signals:
+#### 4.3.2 Aperiodic Signals:
 
 Have a continuous spectrum, covering a range of frequencies.
 Example: A rectangular pulse has a spectrum that spreads across multiple frequencies.
 
-#### 3. Noisy Signals:
+#### 4.3.3 Noisy Signals:
 
 Their spectrum often spans a wide frequency range (e.g., white noise has a uniform spectrum across all frequencies).
 
-### Signal Spectrum Python functions
+### 4.4 Signal Spectrum Python functions
 
 For this requirement I have created next functions that are member functions of the class:
 
-#### 1. Compute spectrum
+#### 4.4.1 Compute spectrum
 
 ```Python
 def compute_spectrum(self, signal, window_size, window_type='rectangular'):
@@ -409,7 +409,7 @@ def compute_spectrum(self, signal, window_size, window_type='rectangular'):
     return freqs, avg_spectrum
 ```
 
-#### 2. Plot spectrum
+#### 4.4.2 Plot spectrum
 
 ```Python
 def plot_spectrum(self, freqs, spectrum, window_type):
@@ -425,7 +425,7 @@ def plot_spectrum(self, freqs, spectrum, window_type):
     plt.show()
 ```
 
-#### 3. Analyze spectrum
+#### 4.4.3 Analyze spectrum
 
 ```Python
 def analyze_spectrum(self):
@@ -457,7 +457,7 @@ def analyze_spectrum(self):
     plt.show()
 ```
 
-### Characteristics of Each Window
+### 4.5 Characteristics of Each Window
 
 | **Window Type**  | **Main Lobe Width** | **Side Lobe Attenuation** | **Use Case**             | **Impact on Spectrum**                                   |
 |-------------------|---------------------|----------------------------|--------------------------|---------------------------------------------------------|
@@ -468,23 +468,23 @@ def analyze_spectrum(self):
 | **Flat Top**      | Very Wide          | Very High (-93 dB)         | Amplitude Measurement   | Flattens peaks, accurate amplitude but low frequency resolution. |
 | **Chebyshev**     | Adjustable         | Customizable (-100 dB)     | Advanced Applications   | Offers customizable trade-offs between resolution and attenuation. |
 
-### Conclusions
+### 4.6 Conclusions
 
-#### Spectral Leakage:
+#### 4.6.1 Spectral Leakage:
 
 - Rectangular windows suffer from the highest spectral leakage, making them unsuitable for signals with close spectral components.
 - Chebyshev and Flat Top windows excel at minimizing leakage but at the cost of broadening the main lobe.
 
-#### Resolution vs. Attenuation:
+#### 4.6.2 Resolution vs. Attenuation:
 
 - Blackman and Hann windows provide a good compromise, with sufficient attenuation for most practical applications.
 
-#### Amplitude Accuracy:
+#### 4.6.3 Amplitude Accuracy:
 
 - The Flat Top window is ideal for amplitude measurements, though its frequency resolution is poor.
 
-#### Customization:
+#### 4.6.4 Customization:
 
 - Chebyshev windows allow fine-tuning for specific needs, such as higher attenuation or narrower main lobes.
 
-## Filters
+## 5. Filters
