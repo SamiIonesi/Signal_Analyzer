@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io.wavfile as wav
-from scipy.signal import find_peaks
-from scipy.signal import windows
+from scipy.signal import find_peaks, windows, tf2zpk
+from scipy.signal import butter, cheby1, freqz, lfilter, find_peaks, windows
+import matplotlib.pyplot as plt
 
 
 class SignalProcessor:
@@ -26,6 +27,8 @@ class SignalProcessor:
         print(f"Loaded file is: {self.file_path}")
         print(f"Sample rate is: {self.sample_rate}")
         print(f"Signal length is: {len(self.signal)}")
+
+        self.signal = self.signal.astype(float)
 
 
     def plot_signal(self, signal, title, color='blue'):
@@ -169,17 +172,32 @@ class SignalProcessor:
         """Calculate variance, standard deviation, and range of the signal."""
         if len(signal) == 0:
             print("Error: The signal is empty.")
-            return None
-        
+            return None, None, None
+
+        # Convert signal to 64-bit float to avoid overflow issues
+        signal = np.array(signal, dtype=np.float64)
+
+        # Check for NaNs or Infinities in the signal
+        if np.any(np.isnan(signal)) or np.any(np.isinf(signal)):
+            print("Warning: The signal contains NaN or Inf values. These will be ignored in calculations.")
+            signal = signal[np.isfinite(signal)]  # Remove NaN or Inf values
+
+        # Calculate variance and standard deviation
         variance = np.var(signal)
         std_deviation = np.sqrt(variance)
-        signal_range = np.max(signal) - np.min(signal)
 
+        # Handle the range calculation more gracefully
+        signal_range = np.max(signal) - np.min(signal)
+        if signal_range < 0:
+            print(f"Warning: The calculated range is negative ({signal_range}). This might be due to unusual signal behavior.")
+
+        # Output the results
         print(f"Variance: {variance}")
         print(f"Standard Deviation: {std_deviation}")
         print(f"Range: {signal_range}")
 
         return variance, std_deviation, signal_range
+
     
 
     def plot_histogram(self, signal, bins=50, title="Signal Histogram"):
@@ -307,46 +325,162 @@ class SignalProcessor:
         plt.legend()
         plt.show()
 
+
+    def butter_bandpass(self, lowcut, highcut, order=4):
+        """Create a Butterworth bandpass filter."""
+        b, a = butter(order, [lowcut, highcut], btype='band', fs=self.sample_rate)
+        return b, a
+    
+
+    def chebyshev_bandpass(self, lowcut, highcut, rp=1, order=4):
+            """Create a Chebyshev bandpass filter."""
+            b, a = cheby1(order, rp, [lowcut, highcut], btype='band', fs=self.sample_rate)
+            return b, a
+
+
+    def apply_filter(self, signal, b, a):
+        """Apply a bandpass filter to the signal."""
+        return lfilter(b, a, signal)
+    
+
+    def plot_filter_response(self, b, a, filter_type):
+        """Plot the frequency response of a filter."""
+        w, h = freqz(b, a, worN=2000)
+        plt.figure(figsize=(12, 6))
+        plt.plot(w, abs(h), label=f"{filter_type} Bandpass Filter")
+        plt.xlabel('Frequency [Hz]')
+        plt.ylabel('Magnitude')
+        plt.title(f'Frequency Response of {filter_type} Filter')
+        plt.grid(True)
+        plt.legend()
+        plt.show()
+
+
+    def plot_pole_zero(self, b, a, label):
+        poles = np.roots(a)
+        zeros = np.roots(b)
+
+        plt.figure(figsize=(8, 8))
+
+        # Plot poles and zeros
+        plt.scatter(np.real(zeros), np.imag(zeros), s=50, label='Zeros', color='blue', marker='o')
+        plt.scatter(np.real(poles), np.imag(poles), s=50, label='Poles', color='red', marker='x')
+
+        # Draw unit circle
+        unit_circle = plt.Circle((0, 0), 1, color='black', fill=False, linestyle='--', label='Unit Circle')
+        plt.gca().add_artist(unit_circle)
+
+        # Axes and title
+        plt.axhline(0, color='gray', lw=1)
+        plt.axvline(0, color='gray', lw=1)
+        plt.title(f'Pole-Zero Plot: {label}')
+        plt.xlabel('Real Part')
+        plt.ylabel('Imaginary Part')
+        plt.grid(True, linestyle='--', alpha=0.7)
+        plt.legend()
+        plt.axis('equal')
+        plt.show()
+
+
+
+    def analyze_filtered_spectrum(self, lowcut, highcut, order=4):
+        """Analyze the spectrum of the signal after applying both Butterworth and Chebyshev filters."""
+        if self.trimmed_signal is None:
+            print("Error: Trimmed signal is not available. Perform trimming first.")
+            return
+
+        # Create filters for both Butterworth and Chebyshev
+        b_butter, a_butter = self.butter_bandpass(lowcut, highcut, order)
+        b_cheby, a_cheby = self.chebyshev_bandpass(lowcut, highcut, order)
+
+        # Plot the frequency response of both filters on the same plot
+        plt.figure(figsize=(12, 6))
+
+        # Butterworth filter response
+        w_butter, h_butter = freqz(b_butter, a_butter, worN=2000)
+        plt.plot(w_butter, abs(h_butter), label='Butterworth Filter', color='blue')
+
+        # Chebyshev filter response
+        w_cheby, h_cheby = freqz(b_cheby, a_cheby, worN=2000)
+        plt.plot(w_cheby, abs(h_cheby), label='Chebyshev Filter', color='orange')
+
+        plt.xlabel('Frequency [Hz]')
+        plt.ylabel('Magnitude')
+        plt.title('Frequency Response of Butterworth and Chebyshev Filters')
+        plt.grid(True)
+        plt.legend()
+        plt.show()
+
+        self.plot_pole_zero(b_butter, a_butter, 'Butterworth Filter')
+        self.plot_pole_zero(b_cheby, a_cheby, 'Chebyshev Filter')
+
+        # Apply the filters to the signal
+        filtered_signal_butter = self.apply_filter(self.trimmed_signal, b_butter, a_butter)
+        filtered_signal_cheby = self.apply_filter(self.trimmed_signal, b_cheby, a_cheby)
+
+        # Compute and plot the spectrum of the filtered signals
+        freqs_butter, spectrum_butter = self.compute_spectrum(filtered_signal_butter, window_size=1024, window_type='hamming')
+        freqs_cheby, spectrum_cheby = self.compute_spectrum(filtered_signal_cheby, window_size=1024, window_type='hamming')
+
+        # Plot the spectrum of both filtered signals on the same plot
+        plt.figure(figsize=(12, 6))
+        plt.plot(freqs_butter, 20 * np.log10(spectrum_butter), label="Butterworth Filtered Signal", color='blue')
+        plt.plot(freqs_cheby, 20 * np.log10(spectrum_cheby), label="Chebyshev Filtered Signal", color='orange')
+
+        plt.title('Spectrum of Filtered Signals (Butterworth vs Chebyshev)')
+        plt.xlabel("Frequency (Hz)")
+        plt.ylabel("Magnitude (dB)")
+        plt.grid(True)
+        plt.legend()
+        plt.show()
+        
+
     def process(self, output_path):
         """Run the entire process."""
+        try:
+            self.load_file()
+            self.plot_signal(self.signal, "Original Signal")
+            self.trim_trailing_zeros()
+            self.plot_signal(self.trimmed_signal, "Trimmed Signal", color='orange')
+            self.analyze_extremes()
 
-        self.load_file()
-        self.plot_signal(self.signal, "Original Signal")
-        self.trim_trailing_zeros()
-        self.plot_signal(self.trimmed_signal, "Trimmed Signal", color='orange')
-        self.analyze_extremes()
+            # Calculate mean of the trimmed signal
+            print("\n--- Mean of the signal---")
+            trimmed_mean = self.calculate_mean(self.trimmed_signal)
+            print(f"Mean of Trimmed Signal: {trimmed_mean}")
 
-        # Calculate mean of the trimmed signal
-        print("\n--- Mean of the signal---")
-        trimmed_mean = self.calculate_mean(self.trimmed_signal)
-        print(f"Mean of Trimmed Signal: {trimmed_mean}")
+            # Calculate median frequency of the trimmed signal
+            print("\n--- Median Frequency of the Signal ---")
+            median_frequency = self.calculate_median_frequency(self.trimmed_signal)
+            if median_frequency:
+                print(f"Median Frequency of Trimmed Signal: {median_frequency} Hz")
 
-        # Calculate median frequency of the trimmed signal
-        print("\n--- Median Frequency of the Signal ---")
-        median_frequency = self.calculate_median_frequency(self.trimmed_signal)
-        if median_frequency:
-            print(f"Median Frequency of Trimmed Signal: {median_frequency} Hz")
+            # Calculate dispersion of the trimmed signal
+            print("\n--- Trimmed Signal Dispersion ---")
+            trimmed_variance, trimmed_std_dev, trimmed_range = self.calculate_dispersion(self.trimmed_signal)
 
-        # Calculate dispersion of the trimmed signal
-        print("\n--- Trimmed Signal Dispersion ---")
-        trimmed_variance, trimmed_std_dev, trimmed_range = self.calculate_dispersion(self.trimmed_signal)
+            # Calculate zero crossings of the trimmed signal
+            print("\n--- Zero Crossings ---")
+            zero_crossings = self.calculate_zero_crossings(self.trimmed_signal)
+            print(f"Number of Zero Crossings: {zero_crossings}")
+            
+            # Plot histogram of the trimmed signal
+            self.plot_histogram(self.trimmed_signal, title="Histogram of Trimmed Signal")
 
-        # Calculate zero crossings of the trimmed signal
-        print("\n--- Zero Crossings ---")
-        zero_crossings = self.calculate_zero_crossings(self.trimmed_signal)
-        print(f"Number of Zero Crossings: {zero_crossings}")
+            # Plot autocorrelation of the trimmed signal
+            self.plot_autocorrelation(self.trimmed_signal)
+
+            # This one is used to analyze the spectrum of the trimmed signal
+            self.analyze_spectrum()
+
+            self.analyze_filtered_spectrum(lowcut=200.0, highcut=1000.0, order=4)
+            
+            self.save_trimmed_file(output_path)
         
-        # Plot histogram of the trimmed signal
-        self.plot_histogram(self.trimmed_signal, title="Histogram of Trimmed Signal")
+        except Exception as e:
+            print(f"Error during processing: {e}")
 
-        # Plot autocorrelation of the trimmed signal
-        self.plot_autocorrelation(self.trimmed_signal)
-
-        # This one is used to analyze the spectrum of the trimmed signal
-        self.analyze_spectrum()
-        
-        self.save_trimmed_file(output_path)
-
+            
 if __name__ == "__main__":
     signal_file = "Wav13.wav"
     output_file = "Wav13_trimmed.wav"

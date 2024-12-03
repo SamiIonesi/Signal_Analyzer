@@ -92,31 +92,6 @@ def save_trimmed_file(self, output_path):
         print("Error: Trimmed signal is empty. Perform trimming first.")
 ```
 
-### 5. Final process
-
-```py
-def process(self, output_path):
-    """Run the entire process: load, trim, plot, and save."""
-
-    self.load_file()
-    self.plot_signal(self.signal, "Original Signal")
-    self.trim_trailing_zeros()
-    self.plot_signal(self.trimmed_signal, "Trimmed Signal", color='orange')
-    self.save_trimmed_file(output_path)
-```
-
-
-And the main function is:
-
-```py
-if __name__ == "__main__":
-    signal_file = "Wav13.wav"
-    output_file = "Wav13_trimmed.wav"
-
-    signalProcessor = SignalProcessor(signal_file)
-    signalProcessor.process(output_file)
-```
-
 ## Signal operations
 
 > Requirement: Determine the extreme values, mean, median, dispersion and represent the histogram.
@@ -218,8 +193,6 @@ def calculate_mean(self, signal):
     return mean_value
 ```
 
-
-
 ### Median frequency of the signal
 The median frequency is a measure used in signal analysis to determine the frequency at which the power spectrum of a signal is divided into two equal halves. It is a key parameter for understanding the distribution of energy across the frequency spectrum.
 
@@ -276,6 +249,8 @@ The dispersion of a signal quantifies how its values are spread out or scattered
 ## Zero crossings
 Zero crossings refer to the points where a signal transitions through the value of zero on its amplitude axis. Specifically, a zero crossing occurs when a signal changes sign from positive to negative or vice versa. This concept is widely used in signal processing and related fields to analyze and characterize signals. <br>
 
+> Requirement: Calculate the number of zero crossings.
+
 [![A zero-crossing in a line graph of a waveform representing voltage over time](https://github.com/user-attachments/assets/fbbd5567-c240-4810-b887-1c7442044ccc)](https://en.wikipedia.org/wiki/Zero_crossing)
 
 ### Zero crossings Python function
@@ -297,6 +272,32 @@ def calculate_zero_crossings(self, signal):
 ## Autocorrelation
 The autocorrelation of a signal measures the similarity of the signal with a delayed version of itself over varying time delays. It quantifies how a signal correlates with itself as the time shift (or lag) increases, providing insight into the signal's periodicity, structure, and temporal relationships.
 
+> Requirement: Plot the autocorrelation.
+
+
+
+### Autocorelation Python function
+
+```Python
+def plot_autocorrelation(self, signal, title="Autocorrelation of Signal"):
+    """Calculate and plot the autocorrelation of the signal."""
+    if len(signal) == 0:
+        print("Error: The signal is empty.")
+        return
+
+    # Calculate autocorrelation
+    autocorr = np.correlate(signal, signal, mode='full')
+    lags = np.arange(-len(signal) + 1, len(signal))
+
+    # Plot autocorrelation
+    plt.figure(figsize=(12, 6))
+    plt.plot(lags, autocorr, color='purple')
+    plt.title(title)
+    plt.xlabel("Lag")
+    plt.ylabel("Autocorrelation")
+    plt.grid(True)
+    plt.show()
+```
 
 ## Analyze signal spectrum
 
@@ -477,3 +478,5 @@ def analyze_spectrum(self):
 #### Customization:
 
 - Chebyshev windows allow fine-tuning for specific needs, such as higher attenuation or narrower main lobes.
+
+## Filters
