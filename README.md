@@ -25,7 +25,9 @@ Removing trailing zeros (or almost zeros, it's hard to get exactly 0) from an au
 
 For this specific requirement I have created next member functions of the class to solve the problem:
 
-### 1. Load File
+### 1.1 Signal graphical representation Python functions
+
+#### 1.1.1 Load File
 
 ```py
 def load_file(self):
@@ -44,7 +46,7 @@ def load_file(self):
 
 ```
 
-### 2. Plot signal
+#### 1.1.2 Plot signal
 
 ```py
 def plot_signal(self, signal, title, color='blue'):
@@ -60,7 +62,7 @@ def plot_signal(self, signal, title, color='blue'):
         plt.show()
 ```
 
-### 3. Trim trailing zeros
+#### 1.1.3 Trim trailing zeros
 
 ```py
 def trim_trailing_zeros(self):
@@ -79,7 +81,7 @@ def trim_trailing_zeros(self):
     print(f"Trimmed signal length: {len(self.trimmed_signal)}")
 ```
 
-### 4. Save trimmed file
+#### 1.1.4 Save trimmed file
 
 ```py
 def save_trimmed_file(self, output_path):
@@ -96,17 +98,17 @@ def save_trimmed_file(self, output_path):
 
 > Requirement: Determine the extreme values, mean, median, dispersion and represent the histogram.
 
-### Extreme values
+### 2.1 Extreme values
 **The extreme values** ​​of a signal refer to the points where the signal reaches its maximum or minimum amplitude. These are important features in signal analysis because they provide information about the intensity, dynamics, and nature of the signal. <br>
 
-#### Example
+#### 2.1.1 Example
 This is an example from a portion of a signal in which we can see local maxima, local minima, global maximum and global minimum. <br>
 ![Extrems_of_a_signal](https://github.com/user-attachments/assets/5cc70f97-a7b5-4fbd-b127-3eb964b38a35)
 
-#### Extreme values Python functions
+#### 2.1.2 Extreme values Python functions
 For this requirement I have created some functions and they are:
 
-##### - Global extreme values
+##### 2.1.2.1 Global extreme values
 ```Python
 def calculate_global_extremes(self, signal):
     """Calculate and print the global maximum and minimum of the signal."""
@@ -120,7 +122,7 @@ def calculate_global_extremes(self, signal):
     return max_value, min_value
 ```
 
-##### - Local extreme values
+##### 2.1.2.2 Local extreme values
 ```Python
 def calculate_local_extremes(self, signal):
     """Calculate local maxima and minima of the signal."""
@@ -136,7 +138,7 @@ def calculate_local_extremes(self, signal):
     return local_maxima_values, local_maxima_indices, local_minima_values, local_minima_indices
 ```
 
-##### - Plot extremes
+##### 2.1.2.3 Plot extremes
 ```Python
 def analyze_extremes(self):
     """Analyze and plot global and local extremes for the trimmed signal."""
@@ -168,14 +170,14 @@ def analyze_extremes(self):
     plt.show()
 ```
 
-### Mean of the signal
+### 2.2 Mean of the signal
 **The mean** of a signal is the arithmetic average of all its amplitude values. It provides a measure of the signal's central tendency or the "average level" of the signal's amplitude.
 
-#### Mean formula
+#### 2.2.1 Mean formula
 The mathematical relation for the mean of a function f(t) is defined as: <br>
 ![Mean_of_Signal](https://github.com/user-attachments/assets/26912a65-d4e9-4554-b99c-ef47be35d67a)
 
-#### Mean Python function
+#### 2.2.2 Mean Python function
 The function that I created for this requirement is:
 
 ```Python
@@ -193,24 +195,24 @@ def calculate_mean(self, signal):
     return mean_value
 ```
 
-### Median frequency of the signal
+### 2.3 Median frequency of the signal
 The median frequency is a measure used in signal analysis to determine the frequency at which the power spectrum of a signal is divided into two equal halves. It is a key parameter for understanding the distribution of energy across the frequency spectrum.
 
-#### How it works
+#### 2.3.1 How it works
 
-##### 1. Frequency Spectrum
+##### 2.3.1.1 Frequency Spectrum
 The signal is first converted to the frequency domain using the Fast Fourier Transform (FFT).
 
-##### 2. Power Spectral Density (PSD)
+##### 2.3.1.2  Power Spectral Density (PSD)
 The squared magnitude of the FFT values gives the power at each frequency.
 
-##### 3. Cumulative Power
+##### 2.3.1.3 Cumulative Power
 The cumulative sum of the PSD is computed.
 
-##### 4. Median Frequency
+##### 2.3.1.4 Median Frequency
 The frequency where the cumulative power reaches 50% of the total power is identified as the median frequency.
 
-#### Median frequency Python function
+#### 2.3.2 Median frequency Python function
 For this requirement I have createt next member function of the class:
 
 ```Python
@@ -243,7 +245,7 @@ def calculate_median_frequency(self, signal):
         return median_frequency
 ```
 
-### Dispersion of a signal
+### 2.4 Dispersion of a signal
 The dispersion of a signal quantifies how its values are spread out or scattered around a central value (usually the mean). Dispersion provides insight into the variability of the signal. Key statistical measures of dispersion include variance, standard deviation, and range.
 
 ## 3.1 Zero crossings
