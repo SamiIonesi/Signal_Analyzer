@@ -274,7 +274,7 @@ The autocorrelation of a signal measures the similarity of the signal with a del
 
 > Requirement: Plot the autocorrelation.
 
-
+![Signal_autocorrelation](https://github.com/user-attachments/assets/b7983428-2ed2-4de7-9564-8f5fd45a9eee)
 
 ### Autocorelation Python function
 
