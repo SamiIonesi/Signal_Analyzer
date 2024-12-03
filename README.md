@@ -17,7 +17,7 @@ class SignalProcessor:
         self.trimmed_signal = None
 ```
 
-## Graphical representation of the signal
+## 1. Graphical representation of the signal
 > Requirement: Graphically represent the signal. Extract the useful part of the signal if necessary (eliminate
 the 0 values ​​at the end of the file). Create a new file that will be used further. <br>
 
@@ -92,7 +92,7 @@ def save_trimmed_file(self, output_path):
         print("Error: Trimmed signal is empty. Perform trimming first.")
 ```
 
-## Signal operations
+## 2. Signal operations
 
 > Requirement: Determine the extreme values, mean, median, dispersion and represent the histogram.
 
@@ -246,14 +246,14 @@ def calculate_median_frequency(self, signal):
 ### Dispersion of a signal
 The dispersion of a signal quantifies how its values are spread out or scattered around a central value (usually the mean). Dispersion provides insight into the variability of the signal. Key statistical measures of dispersion include variance, standard deviation, and range.
 
-## Zero crossings
+## 3.1 Zero crossings
 Zero crossings refer to the points where a signal transitions through the value of zero on its amplitude axis. Specifically, a zero crossing occurs when a signal changes sign from positive to negative or vice versa. This concept is widely used in signal processing and related fields to analyze and characterize signals. <br>
 
 > Requirement: Calculate the number of zero crossings.
 
 [![A zero-crossing in a line graph of a waveform representing voltage over time](https://github.com/user-attachments/assets/fbbd5567-c240-4810-b887-1c7442044ccc)](https://en.wikipedia.org/wiki/Zero_crossing)
 
-### Zero crossings Python function
+## Zero crossings Python function
 
 For this requirement I have created next member class function:
 ```Python
@@ -269,7 +269,7 @@ def calculate_zero_crossings(self, signal):
     return zero_crossings
 ```
 
-## Autocorrelation
+## 3.2 Autocorrelation
 The autocorrelation of a signal measures the similarity of the signal with a delayed version of itself over varying time delays. It quantifies how a signal correlates with itself as the time shift (or lag) increases, providing insight into the signal's periodicity, structure, and temporal relationships.
 
 > Requirement: Plot the autocorrelation.
@@ -300,9 +300,14 @@ def plot_autocorrelation(self, signal, title="Autocorrelation of Signal"):
     plt.show()
 ```
 
-## Analyze signal spectrum
+## 4. Analyze signal spectrum
 
 The spectrum of a signal represents the distribution of its frequency components, showing how much of the signal's energy or amplitude is present at each frequency. It is a way to analyze and visualize the signal in the frequency domain, rather than the time domain.
+
+> Requirement: Determine the signal spectrum as follows:
+- a) Apply the Fourier Transform on a series of samples (1 second or 1024/2048 samples);
+- b) Apply various time windows and repeat 4.a. for each type of window;
+- c) Draw conclusions regarding the signal spectrum.
 
 ### Key Aspects of a Signal's Spectrum:
 
