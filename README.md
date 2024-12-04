@@ -48,6 +48,8 @@ def load_file(self):
 
 #### 1.1.2 Plot signal
 
+![Original_signal](https://github.com/user-attachments/assets/88b48364-ea91-4496-9453-9cb88496bf59)
+
 ```py
 def plot_signal(self, signal, title, color='blue'):
         """Plot the given signal."""
@@ -63,6 +65,8 @@ def plot_signal(self, signal, title, color='blue'):
 ```
 
 #### 1.1.3 Trim trailing zeros
+
+![Trimmed_signal](https://github.com/user-attachments/assets/6e9c1780-6b08-43f2-91db-df3f70a70009)
 
 ```py
 def trim_trailing_zeros(self):
@@ -103,6 +107,7 @@ def save_trimmed_file(self, output_path):
 
 #### 2.1.1 Example
 This is an example from a portion of a signal in which we can see local maxima, local minima, global maximum and global minimum. <br>
+
 ![Extrems_of_a_signal](https://github.com/user-attachments/assets/5cc70f97-a7b5-4fbd-b127-3eb964b38a35)
 
 #### 2.1.2 Extreme values Python functions
@@ -175,7 +180,10 @@ def analyze_extremes(self):
 
 #### 2.2.1 Mean formula
 The mathematical relation for the mean of a function f(t) is defined as: <br>
-![Mean_of_Signal](https://github.com/user-attachments/assets/26912a65-d4e9-4554-b99c-ef47be35d67a)
+
+![Mean_of_Signal](https://github.com/user-attachments/assets/26912a65-d4e9-4554-b99c-ef47be35d67a) <br>
+
+**The mean of the signal is: 0.0056522269251537164.**
 
 #### 2.2.2 Mean Python function
 The function that I created for this requirement is:
@@ -197,6 +205,8 @@ def calculate_mean(self, signal):
 
 ### 2.3 Median frequency of the signal
 The median frequency is a measure used in signal analysis to determine the frequency at which the power spectrum of a signal is divided into two equal halves. It is a key parameter for understanding the distribution of energy across the frequency spectrum.
+
+**Median frequency of the signal: 1320.058002821759 Hz.**
 
 #### 2.3.1 How it works
 
@@ -248,12 +258,16 @@ def calculate_median_frequency(self, signal):
 ### 2.4 Dispersion of a signal
 The dispersion of a signal quantifies how its values are spread out or scattered around a central value (usually the mean). Dispersion provides insight into the variability of the signal. Key statistical measures of dispersion include variance, standard deviation, and range.
 
+![Dispersion_of_the_signal](https://github.com/user-attachments/assets/93efafeb-ae43-4ed1-a55d-4549e005601e)
+
 ## 3.1 Zero crossings
 Zero crossings refer to the points where a signal transitions through the value of zero on its amplitude axis. Specifically, a zero crossing occurs when a signal changes sign from positive to negative or vice versa. This concept is widely used in signal processing and related fields to analyze and characterize signals. <br>
 
 > Requirement: Calculate the number of zero crossings.
 
 [![A zero-crossing in a line graph of a waveform representing voltage over time](https://github.com/user-attachments/assets/fbbd5567-c240-4810-b887-1c7442044ccc)](https://en.wikipedia.org/wiki/Zero_crossing)
+
+**There is 47560 zero crossings.**
 
 ### 3.1.1 Zero crossings Python function
 
@@ -275,7 +289,6 @@ def calculate_zero_crossings(self, signal):
 The autocorrelation of a signal measures the similarity of the signal with a delayed version of itself over varying time delays. It quantifies how a signal correlates with itself as the time shift (or lag) increases, providing insight into the signal's periodicity, structure, and temporal relationships.
 
 > Requirement: Plot the autocorrelation.
-
 
 ![Signal_autocorrelation](https://github.com/user-attachments/assets/b7983428-2ed2-4de7-9564-8f5fd45a9eee)
 
@@ -469,6 +482,8 @@ def analyze_spectrum(self):
 | **Chebyshev**     | Adjustable         | Customizable (-100 dB)     | Advanced Applications   | Offers customizable trade-offs between resolution and attenuation. |
 
 ### 4.6 Conclusions
+
+![Windows](https://github.com/user-attachments/assets/f3a19423-ee12-410e-ba10-c02bfbd6bb81)
 
 #### 4.6.1 Spectral Leakage
 
@@ -711,5 +726,72 @@ def analyze_filtered_spectrum(self, lowcut, highcut, order=4):
     plt.show()
 ```
 
+## 6. Run the process
+
+### 6.1 Process Python function
+
+Finally to run all the requirement and to see them, I have created a function than include all the functions explained above.
+
+```Python
+def process(self, output_path):
+    """Run the entire process."""
+    try:
+        self.load_file()
+        self.plot_signal(self.signal, "Original Signal")
+        self.trim_trailing_zeros()
+        self.plot_signal(self.trimmed_signal, "Trimmed Signal", color='orange')
+        self.analyze_extremes()
+
+        # Calculate mean of the trimmed signal
+        print("\n--- Mean of the signal---")
+        trimmed_mean = self.calculate_mean(self.trimmed_signal)
+        print(f"Mean of Trimmed Signal: {trimmed_mean}")
+
+        # Calculate median frequency of the trimmed signal
+        print("\n--- Median Frequency of the Signal ---")
+        median_frequency = self.calculate_median_frequency(self.trimmed_signal)
+        if median_frequency:
+            print(f"Median Frequency of Trimmed Signal: {median_frequency} Hz")
+
+        # Calculate dispersion of the trimmed signal
+        print("\n--- Trimmed Signal Dispersion ---")
+        trimmed_variance, trimmed_std_dev, trimmed_range = self.calculate_dispersion(self.trimmed_signal)
+
+        # Calculate zero crossings of the trimmed signal
+        print("\n--- Zero Crossings ---")
+        zero_crossings = self.calculate_zero_crossings(self.trimmed_signal)
+        print(f"Number of Zero Crossings: {zero_crossings}")
+        
+        # Plot histogram of the trimmed signal
+        self.plot_histogram(self.trimmed_signal, title="Histogram of Trimmed Signal")
+
+        # Plot autocorrelation of the trimmed signal
+        self.plot_autocorrelation(self.trimmed_signal)
+
+        # This one is used to analyze the spectrum of the trimmed signal
+        self.analyze_spectrum()
+
+        self.analyze_filtered_spectrum(lowcut=200.0, highcut=1000.0, order=4)
+        
+        self.save_trimmed_file(output_path)
+    
+    except Exception as e:
+        print(f"Error during processing: {e}")
+
+```
+
+### 6.2 Main Python function
+
+And the main function is: 
+
+```Python
+if __name__ == "__main__":
+    
+    signal_file = "Wav13.wav"
+    output_file = "Wav13_trimmed.wav"
+
+    signalProcessor = SignalProcessor(signal_file)
+    signalProcessor.process(output_file)
+```
 
 
