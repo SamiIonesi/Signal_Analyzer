@@ -482,6 +482,7 @@ class SignalProcessor:
 
             
 if __name__ == "__main__":
+
     signal_file = "Wav13.wav"
     output_file = "Wav13_trimmed.wav"
 
