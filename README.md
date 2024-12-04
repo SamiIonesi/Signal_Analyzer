@@ -488,3 +488,67 @@ def analyze_spectrum(self):
 - Chebyshev windows allow fine-tuning for specific needs, such as higher attenuation or narrower main lobes.
 
 ## 5. Filters
+
+In signal processing, filters are systems or algorithms that modify or manipulate a signal by selectively allowing certain frequencies or components to pass through while attenuating or blocking others. Filters are used to enhance, extract, or suppress specific aspects of a signal. The primary purpose of a filter is to remove unwanted noise or interference, smooth signals, or emphasize certain frequencies or features of a signal.
+
+> Requirement: Considering the frequency corresponding to the spectral line of maximum amplitude and another spectral line of smaller amplitude in the vicinity of the first, a numerical band-pass filter is designed to isolate the two spectral lines. <br>
+> a) Determination of the transfer functions for two types of filters (of your choice). <br>
+> b) Representation of the frequency characteristic or location of the poles and zeros for the two filters. <br>
+> c) Representation of the spectrum of the filtered signal. <br>
+
+Filters can be classified in various ways, but they are generally categorized by their frequency response and structure.
+
+### 5.1 Types of Filters by Frequency Response
+
+#### 5.1.1 Low-pass Filter (LPF)
+Allows frequencies below a certain cutoff frequency to pass and attenuates higher frequencies. Used to remove high-frequency noise or smooth signals.
+
+#### 5.1.2 High-pass Filter (HPF)
+Allows frequencies above a certain cutoff frequency to pass and attenuates lower frequencies. Useful for removing low-frequency drift or noise.
+
+#### 5.1.3 Band-pass Filter (BPF)
+Allows frequencies within a specific range (band) to pass and attenuates frequencies outside that range. It is used to isolate signals within a specific frequency range.
+
+#### 5.1.4 Band-stop Filter (BSF) or Notch Filter
+Attenuates frequencies within a specific range and allows frequencies outside of that range to pass. This type of filter is used to reject unwanted frequencies, such as a particular interference frequency.
+
+### 5.2 Types of Filters by Time Domain Characteristics
+
+#### 5.2.1 FIR (Finite Impulse Response) Filters
+The impulse response is finite, meaning it has a limited duration. FIR filters are typically stable and easy to design. They are non-recursive, meaning the output depends only on the current and past inputs.
+
+#### 5.2.2 IIR (Infinite Impulse Response) Filters
+The impulse response is infinite, meaning it theoretically continues indefinitely. IIR filters are recursive, meaning the output depends on both the current and past inputs and past outputs. They are more computationally efficient than FIR filters for certain applications but can be unstable if not designed properly.
+
+### 5.3 Filter Characteristics
+
+#### 5.3.1 Linear Filters
+A filter is linear if it satisfies two properties: homogeneity (scaling of input results in scaling of output) and additivity (the sum of outputs equals the output of the sum of inputs). Most basic filters are linear.
+
+#### 5.3.2 Non-linear Filters
+These do not satisfy linearity properties. They are used in applications like signal restoration or image processing, where the input-output relationship is more complex. An example is the median filter used for noise reduction in images.
+
+### 5.4 Design Approaches
+
+#### 5.4.1 Analog Filters
+These filters are implemented using analog components like resistors, capacitors, and inductors. Examples include the RC (Resistor-Capacitor) and RL (Resistor-Inductor) filters.
+
+#### 5.4.2 Digital Filters
+These filters are implemented using algorithms in digital form, typically in discrete-time systems, such as FIR and IIR filters. They are used in applications where signals are sampled and processed digitally.
+
+### 5.5 Common Filter Applications
+
+#### 5.5.1 Noise Reduction
+Filtering out unwanted noise from a signal.
+
+#### 5.5.2 Signal Smoothing
+Removing high-frequency fluctuations (e.g., in a time-series signal).
+
+#### 5.5.3 Feature Extraction
+Emphasizing or isolating particular frequency components of a signal.
+
+#### 5.5.4 Data Compression
+Reducing unnecessary data by filtering out irrelevant parts of a signal.
+
+#### 5.5.5 Communication Systems
+Shaping signals for optimal transmission or preventing interference.
