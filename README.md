@@ -552,3 +552,164 @@ Reducing unnecessary data by filtering out irrelevant parts of a signal.
 
 #### 5.5.5 Communication Systems
 Shaping signals for optimal transmission or preventing interference.
+
+### 5.6 Transfer functions for two types of filters
+To solve this requirement I have chosen two types of filters
+
+#### 5.6.1 Filters type
+
+##### 5.6.1.1 Butterworth filter
+A Butterworth filter is a type of electronic or digital filter that is designed to have a very smooth frequency response in the passband, with no ripples. It is also known as a maximally flat filter because it provides the flattest possible amplitude response in the passband among all filter designs. This feature makes it ideal for applications where signal distortion in the passband must be minimized.
+
+##### 5.6.1.2 Chebyshev filter
+A Chebyshev filter is a type of electronic or digital filter designed to achieve a specific set of characteristics in signal processing. It is widely used because of its ability to provide a sharper transition between the passband and the stopband compared to other filters, such as Butterworth filters, for a given filter order. However, this sharpness comes at the cost of ripples in either the passband or the stopband, depending on the type of Chebyshev filter.
+
+#### 5.6.2 Filters Python functions
+
+##### 5.6.2.1 Butterworth filter Python function
+```Python
+def butter_bandpass(self, lowcut, highcut, order=4):
+    """Create a Butterworth bandpass filter."""
+    b, a = butter(order, [lowcut, highcut], btype='band', fs=self.sample_rate)
+    return b, a
+```
+
+##### 5.6.2.2 Chebyshev filter Python function
+```Python
+def chebyshev_bandpass(self, lowcut, highcut, rp=1, order=4):
+        """Create a Chebyshev bandpass filter."""
+        b, a = cheby1(order, rp, [lowcut, highcut], btype='band', fs=self.sample_rate)
+        return b, a
+```
+
+##### 5.6.2.3 Applay filter Python function
+```Python
+def apply_filter(self, signal, b, a):
+    """Apply a bandpass filter to the signal."""
+    return lfilter(b, a, signal)
+```
+
+### 5.7 Frequency characteristic
+The representation of the frequency characteristic of a signal refers to the description or analysis of how the signal's energy or amplitude is distributed across different frequencies. This is a fundamental concept in signal processing, as it provides insight into the underlying structure and content of the signal in the frequency domain.
+
+![Frequency_Characteristic](https://github.com/user-attachments/assets/3e871d3c-2e3b-407e-bc33-ab09a0819e78)
+
+#### 5.7.1 Frequency characteristic Python function
+
+```Python
+def plot_filter_response(self, b, a, filter_type):
+    """Plot the frequency response of a filter."""
+    w, h = freqz(b, a, worN=2000)
+    plt.figure(figsize=(12, 6))
+    plt.plot(w, abs(h), label=f"{filter_type} Bandpass Filter")
+    plt.xlabel('Frequency [Hz]')
+    plt.ylabel('Magnitude')
+    plt.title(f'Frequency Response of {filter_type} Filter')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+```
+
+### 5.8 Poles and zeros
+Poles and zeros are fundamental concepts in the study of systems and signal processing, especially in the context of filter design, control systems, and the analysis of linear time-invariant (LTI) systems. They are specific values of a system's transfer function that provide important insights into its behavior.
+
+#### 5.8.1 Poles and zeros Python function
+
+```Python
+def plot_pole_zero(self, b, a, label):
+    poles = np.roots(a)
+    zeros = np.roots(b)
+
+    plt.figure(figsize=(8, 8))
+
+    # Plot poles and zeros
+    plt.scatter(np.real(zeros), np.imag(zeros), s=50, label='Zeros', color='blue', marker='o')
+    plt.scatter(np.real(poles), np.imag(poles), s=50, label='Poles', color='red', marker='x')
+
+    # Draw unit circle
+    unit_circle = plt.Circle((0, 0), 1, color='black', fill=False, linestyle='--', label='Unit Circle')
+    plt.gca().add_artist(unit_circle)
+
+    # Axes and title
+    plt.axhline(0, color='gray', lw=1)
+    plt.axvline(0, color='gray', lw=1)
+    plt.title(f'Pole-Zero Plot: {label}')
+    plt.xlabel('Real Part')
+    plt.ylabel('Imaginary Part')
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend()
+    plt.axis('equal')
+    plt.show()
+```
+
+#### 5.8.2 Poles and zeros Butterworth filter
+
+![Poles Zeros_Butter](https://github.com/user-attachments/assets/48dc2296-d256-4f44-b10e-4758251fc31d)
+
+#### 5.8.3 Poles and zeros Chebyshev filter
+
+![Poles Zeros_Chebisev](https://github.com/user-attachments/assets/1659c1c4-3e35-47bc-b386-422a466c2a54)
+
+### 5.9 Signal spectrum
+
+The spectrum of a signal represents the distribution of the signal's energy or power across different frequencies. It provides a way to analyze the frequency content of the signal, which is critical for understanding its behavior, designing filters, or optimizing communication systems.
+
+#### 5.9.1 Signal spectrum Python function
+
+```Python
+def analyze_filtered_spectrum(self, lowcut, highcut, order=4):
+    """Analyze the spectrum of the signal after applying both Butterworth and Chebyshev filters."""
+    if self.trimmed_signal is None:
+        print("Error: Trimmed signal is not available. Perform trimming first.")
+        return
+
+    # Create filters for both Butterworth and Chebyshev
+    b_butter, a_butter = self.butter_bandpass(lowcut, highcut, order)
+    b_cheby, a_cheby = self.chebyshev_bandpass(lowcut, highcut, order)
+
+    # Plot the frequency response of both filters on the same plot
+    plt.figure(figsize=(12, 6))
+
+    # Butterworth filter response
+    w_butter, h_butter = freqz(b_butter, a_butter, worN=2000)
+    plt.plot(w_butter, abs(h_butter), label='Butterworth Filter', color='blue')
+
+    # Chebyshev filter response
+    w_cheby, h_cheby = freqz(b_cheby, a_cheby, worN=2000)
+    plt.plot(w_cheby, abs(h_cheby), label='Chebyshev Filter', color='orange')
+
+    plt.xlabel('Frequency [Hz]')
+    plt.ylabel('Magnitude')
+    plt.title('Frequency Response of Butterworth and Chebyshev Filters')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+    self.plot_pole_zero(b_butter, a_butter, 'Butterworth Filter')
+    self.plot_pole_zero(b_cheby, a_cheby, 'Chebyshev Filter')
+
+    # Apply the filters to the signal
+    filtered_signal_butter = self.apply_filter(self.trimmed_signal, b_butter, a_butter)
+    filtered_signal_cheby = self.apply_filter(self.trimmed_signal, b_cheby, a_cheby)
+
+    # Compute and plot the spectrum of the filtered signals
+    freqs_butter, spectrum_butter = self.compute_spectrum(filtered_signal_butter, window_size=1024, window_type='hamming')
+    freqs_cheby, spectrum_cheby = self.compute_spectrum(filtered_signal_cheby, window_size=1024, window_type='hamming')
+
+    # Plot the spectrum of both filtered signals on the same plot
+    plt.figure(figsize=(12, 6))
+    plt.plot(freqs_butter, 20 * np.log10(spectrum_butter), label="Butterworth Filtered Signal", color='blue')
+    plt.plot(freqs_cheby, 20 * np.log10(spectrum_cheby), label="Chebyshev Filtered Signal", color='orange')
+
+    plt.title('Spectrum of Filtered Signals (Butterworth vs Chebyshev)')
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel("Magnitude (dB)")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+```
+
+![Spectrum](https://github.com/user-attachments/assets/353714fc-4bc8-403c-9f01-a4265b713f15)
+
+
+
