@@ -1,3 +1,4 @@
+import wave
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io.wavfile as wav
@@ -9,7 +10,7 @@ import matplotlib.pyplot as plt
 class SignalProcessor:
     def __init__(self, file_path):
         self.file_path = file_path
-        self.sample_rate = None
+        self.sample_rate = None #number of time per seconds an audio file is measured
         self.signal = None
         self.trimmed_signal = None
 
@@ -25,10 +26,11 @@ class SignalProcessor:
             print(f"An error occurred: {e}")
 
         print(f"Loaded file is: {self.file_path}")
-        print(f"Sample rate is: {self.sample_rate}")
+
+        print(f"Sample rate is: {self.sample_rate} Hz.")
         print(f"Signal length is: {len(self.signal)}")
 
-        self.signal = self.signal.astype(float)
+        self.signal = self.signal.astype(float) #ca sa pot avea valori cu virgula ale semnalului
 
 
     def plot_signal(self, signal, title, color='blue'):
@@ -49,7 +51,7 @@ class SignalProcessor:
 
         non_zero_indices = np.where((self.signal > 200) | (self.signal < -200))[0]
 
-        print(f"Non zero indice = {non_zero_indices}")
+        #print(f"Non zero indice = {non_zero_indices}")
 
         if len(non_zero_indices) > 0:
             last_non_zero_index = non_zero_indices[-1]
@@ -151,14 +153,14 @@ class SignalProcessor:
             return None
 
         # Compute the FFT of the signal
-        freqs = np.fft.rfftfreq(len(signal), d=1/self.sample_rate)
+        freqs = np.fft.rfftfreq(len(signal), d=1/self.sample_rate)  #transformam semnalul in domeniul frecventa folosind fft
         fft_values = np.fft.rfft(signal)                       
 
         # Compute the Power Spectral Density (PSD)
-        psd = np.abs(fft_values) ** 2
+        psd = np.abs(fft_values) ** 2 #se calculeaza puterea fiecarei frecvente
 
         # Compute cumulative sum of the PSD
-        cumulative_psd = np.cumsum(psd)
+        cumulative_psd = np.cumsum(psd) #calculeaza suma puterii distribuita de-a lungul componentelor de frecventa a semnalului
 
         # Find the frequency where cumulative power equals 50% of total power
         total_power = cumulative_psd[-1]
@@ -183,11 +185,11 @@ class SignalProcessor:
             signal = signal[np.isfinite(signal)]  # Remove NaN or Inf values
 
         # Calculate variance and standard deviation
-        variance = np.var(signal)
-        std_deviation = np.sqrt(variance)
+        variance = np.var(signal) #Variance measures how much the signal's values differ from the mean
+        std_deviation = np.sqrt(variance) #The standard deviation is the square root of the variance. It represents the average amount by which the signal values deviate from the mean.
 
         # Handle the range calculation more gracefully
-        signal_range = np.max(signal) - np.min(signal)
+        signal_range = np.max(signal) - np.min(signal) #The signal range is the difference between the maximum and minimum amplitude values in the signal.
         if signal_range < 0:
             print(f"Warning: The calculated range is negative ({signal_range}). This might be due to unusual signal behavior.")
 
@@ -224,7 +226,10 @@ class SignalProcessor:
 
 
     def plot_autocorrelation(self, signal, title="Autocorrelation of Signal"):
-        """Calculate and plot the autocorrelation of the signal."""
+        """Calculate and plot the autocorrelation of the signal.
+        The autocorrelation of a signal is a mathematical tool used to measure the similarity between the signal and a time-shifted version of itself. 
+        It quantifies how the signal correlates with itself as a function of the time lag 
+        """
         if len(signal) == 0:
             print("Error: The signal is empty.")
             return
@@ -243,7 +248,9 @@ class SignalProcessor:
         plt.show()
 
     def compute_spectrum(self, signal, window_size, window_type='rectangular'):
-        """ Compute the spectrum of the signal using a specified window function. """
+        """ Compute the spectrum of the signal using a specified window function.
+        Spectrul unui semnal reprezintă distribuția frecvențelor componente ale unui semnal și amplitudinile asociate fiecărei frecvențe. 
+         """
 
         # Determine the window function
         if window_type == 'rectangular':
@@ -263,6 +270,7 @@ class SignalProcessor:
 
         # Divide signal into chunks
         num_chunks = len(signal)
+        print(f"num_chunks = {num_chunks}")
         spectra = []
 
         for i in range(num_chunks):
@@ -420,7 +428,7 @@ class SignalProcessor:
 
         # Compute and plot the spectrum of the filtered signals
         freqs_butter, spectrum_butter = self.compute_spectrum(filtered_signal_butter, window_size=1024, window_type='hamming')
-        freqs_cheby, spectrum_cheby = self.compute_spectrum(filtered_signal_cheby, window_size=1024, window_type='hamming')
+        freqs_cheby, spectrum_cheby = self.compute_spectrum(filtered_signal_cheby, window_size=1024, window_type='chebyshev')
 
         # Plot the spectrum of both filtered signals on the same plot
         plt.figure(figsize=(12, 6))
