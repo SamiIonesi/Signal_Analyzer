@@ -669,7 +669,7 @@ def plot_pole_zero(self, b, a, label):
 
 The spectrum of a signal represents the distribution of the signal's energy or power across different frequencies. It provides a way to analyze the frequency content of the signal, which is critical for understanding its behavior, designing filters, or optimizing communication systems.
 
-![Spectrum](https://github.com/user-attachments/assets/353714fc-4bc8-403c-9f01-a4265b713f15)
+![Screenshot 2025-01-16 174337](https://github.com/user-attachments/assets/db7ece96-ab79-40d2-8cb8-5e4a0f63a9ab)
 
 #### 5.9.1 Signal spectrum Python function
 
