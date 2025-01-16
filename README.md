@@ -23,7 +23,7 @@ the 0 values ​​at the end of the file). Create a new file that will be used 
 
 Removing trailing zeros (or almost zeros, it's hard to get exactly 0) from an audio file (in this case, a WAV file) refers to the process of removing the portion of the signal that is completely silent (no amplitude) at the end of the recording.
 
-The sample frequency or sample rate of the signal is: 22050 Hz.
+The **sample frequency** or **sample rate** of the signal is: **22050 Hz**.
 
 For this specific requirement I have created next member functions of the class to solve the problem:
 
